@@ -99,7 +99,7 @@ export default function PacketsPage() {
   const otherProducts = products.filter(p => p.type === 'Other');
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4, mt: 16, mb: 16 }}>
+    <Container maxWidth="lg" sx={{ py: 4, mt: 16, mb: 16, bgcolor: '#F7F6F5' }}>
       <div style={{ display: 'flex', gap: '32px', flexDirection: 'row', flexWrap: 'wrap' }}>
         {/* Sol Panel - Ürünler */}
         <div style={{ flex: '1 1 600px' }}>
@@ -262,7 +262,7 @@ export default function PacketsPage() {
 
         {/* Sağ Panel - Seçilen Ürünler */}
         <div style={{ flex: '0 1 400px' }}>
-          <Paper sx={{ p: 3, position: 'sticky', top: 20 }} elevation={0} variant="outlined">
+          <Paper sx={{ p: 3, position: 'sticky', top: 20 }} elevation={0}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
               <Typography variant="h6">Paketin</Typography>
               <Chip
