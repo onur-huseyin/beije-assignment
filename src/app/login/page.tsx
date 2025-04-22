@@ -90,7 +90,7 @@ const LoginForm = () => {
         localStorage.setItem('token', token);
         dispatch(setToken(token));
         
-        const profileResponse = await api.auth.getProfile(token);
+        const profileResponse = await api.auth.getProfile();
         if (profileResponse.success) {
           dispatch(setProfile(profileResponse.data));
           toast.success('Giriş başarılı!');
