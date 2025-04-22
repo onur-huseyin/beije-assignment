@@ -4,12 +4,13 @@ import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextField, Button, Box, Typography, IconButton, InputAdornment } from '@mui/material';
+import { TextField, Button, Box, Typography, IconButton, InputAdornment, CircularProgress } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { setToken, setProfile } from '@/store/slices/authSlice';
 import { api } from '@/services/api';
 import Image from 'next/image';
 import type { RootState } from '@/store/store';
+import { toast } from 'sonner';
 
 const LoginForm = () => {
   const router = useRouter();
@@ -17,10 +18,10 @@ const LoginForm = () => {
   const { token } = useSelector((state: RootState) => state.auth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -56,32 +57,37 @@ const LoginForm = () => {
     return isValid;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
+    // Form validasyonu
     if (!validateForm()) {
       return;
     }
-
+    
+    setIsLoading(true);
     try {
-      const loginResponse = await api.auth.login(email, password);
-      if (loginResponse.success) {
-        const token = loginResponse.data.token;
+      const response = await api.auth.login(email, password);
+      
+      if (response.success) {
+        const token = response.data.token;
         localStorage.setItem('token', token);
         dispatch(setToken(token));
         
         const profileResponse = await api.auth.getProfile(token);
         if (profileResponse.success) {
           dispatch(setProfile(profileResponse.data));
-          router.replace('/packets');
+          toast.success('Giriş başarılı!');
+          router.push('/packets');
         }
       } else {
-        setError('Giriş başarısız oldu. Lütfen bilgilerinizi kontrol edin.');
+        toast.error('Email veya şifre hatalı!');
       }
     } catch (error) {
       console.error('Login error:', error);
-      setError('Email veya şifre hatalı');
+      toast.error('Bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -225,15 +231,11 @@ const LoginForm = () => {
               Şifremi Unuttum
             </Button>
           </Box>
-          {error && (
-            <Typography color="error" sx={{ mt: 2 }}>
-              {error}
-            </Typography>
-          )}
           <Button
             type="submit"
             fullWidth
             variant="contained"
+            disabled={isLoading}
             sx={{ 
               mt: 3,
               mb: 2,
@@ -244,7 +246,11 @@ const LoginForm = () => {
               }
             }}
           >
-            Giriş Yap
+            {isLoading ? (
+              <CircularProgress size={24} sx={{ color: '#fff' }} />
+            ) : (
+              'Giriş Yap'
+            )}
           </Button>
         </Box>
       </Box>

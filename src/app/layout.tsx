@@ -5,6 +5,10 @@ import Navbar from "@/components/Navbar";
 import ThemeProvider from './theme-provider';
 import { CssBaseline } from '@mui/material';
 import Footer from '@/components/Footer';
+import { Inter } from 'next/font/google';
+import { Toaster } from 'sonner';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: "beije",
@@ -18,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr">
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className={inter.className}>
         <ThemeProvider>
           <CssBaseline />
           <Providers>
@@ -26,6 +30,7 @@ export default function RootLayout({
             {children}
           </Providers>
           <Footer />
+          <Toaster position="top-center" richColors />
         </ThemeProvider>
       </body>
     </html>

@@ -17,11 +17,12 @@ import {
   Tab,
   Skeleton,
 } from '@mui/material';
-import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon, DeleteOutline as DeleteOutlineIcon } from '@mui/icons-material';
+import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@mui/icons-material';
 import { setProducts, setPackets, setSelectedProduct, clearSelectedProducts } from '@/store/slices/productsSlice';
 import { setToken } from '@/store/slices/authSlice';
 import { api } from '@/services/api';
 import type { RootState } from '@/store/store';
+import { toast } from 'sonner';
 
 interface SubProduct {
   _id: string;
@@ -64,6 +65,15 @@ export default function PacketsPage() {
 
     dispatch(setToken(storedToken));
 
+    // Kayıtlı ürünleri localStorage'dan al
+    const savedProducts = localStorage.getItem('selectedProducts');
+    if (savedProducts) {
+      const parsedProducts = JSON.parse(savedProducts);
+      Object.entries(parsedProducts).forEach(([id, count]) => {
+        dispatch(setSelectedProduct({ id, count: Number(count) }));
+      });
+    }
+
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
@@ -82,6 +92,11 @@ export default function PacketsPage() {
     fetchProducts();
   }, [dispatch, router]);
 
+  // Seçilen ürünler değiştiğinde localStorage'a kaydet
+  useEffect(() => {
+    localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
+  }, [selectedProducts]);
+
   const handleQuantityChange = (productId: string, count: number) => {
     if (count >= 0) {
       dispatch(setSelectedProduct({ id: productId, count }));
@@ -92,7 +107,8 @@ export default function PacketsPage() {
     return Object.entries(selectedProducts).reduce((total, [id, count]) => {
       const product = products.find(p => p.subProducts.some(sp => sp._id === id));
       const subProduct = product?.subProducts.find(sp => sp._id === id);
-      return total + (subProduct?.price || 0) * count;
+      // Her 10'luk paket için bir fiyat ekliyoruz
+      return total + (subProduct?.price || 0) * (count / 10);
     }, 0);
   };
 
@@ -110,9 +126,12 @@ export default function PacketsPage() {
       const response = await api.products.verifyPacketPrice(token, packet, totalPrice);
       if (response.success) {
         dispatch(clearSelectedProducts());
+        localStorage.removeItem('selectedProducts');
+        toast.success('Ürünler sepete eklendi!');
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
+      toast.error('Sepete eklerken bir hata oluştu!');
     }
   };
 
@@ -153,6 +172,25 @@ export default function PacketsPage() {
     });
 
     return grouped;
+  };
+
+  const getProductColor = (name: string) => {
+    switch (name) {
+      case 'Standart Ped':
+        return '#EF4E25'; // Turuncu
+      case 'Süper Ped':
+        return '#B4362B'; // Kırmızımsı
+      case 'Süper+ Ped':
+        return '#6D1D19'; // Koyu kırmızı
+      case 'Mini Tampon':
+        return '#EF4E25';
+      case 'Standard Tampon':
+        return '#B4362B';
+      case 'Süper Tampon':
+        return '#6D1D19';
+      default:
+        return '#EF4E25';
+    }
   };
 
   return (
@@ -265,7 +303,7 @@ export default function PacketsPage() {
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
-                                  bgcolor: '#EF4E25',
+                                  bgcolor: getProductColor(subProduct.name),
                                 }}
                               >
                                 <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -273,7 +311,7 @@ export default function PacketsPage() {
                                   <path d="M25.4665 16.5039H14.5334C13.139 16.5039 12.0085 17.6343 12.0085 19.0288V19.4901C12.0085 20.8845 13.139 22.015 14.5334 22.015H25.4665C26.861 22.015 27.9914 20.8845 27.9914 19.4901V19.0288C27.9914 17.6343 26.861 16.5039 25.4665 16.5039Z" stroke="white" strokeWidth="1.5" strokeMiterlimit="10" />
                                 </svg>
                               </Box>
-                              <Typography>{subProduct.name}</Typography>
+                              <Typography sx={{ fontSize: '18px', fontWeight: 500 }}>{subProduct.name}</Typography>
                             </Box>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, borderRadius: '40px', border: '1px solid #00000026', padding: '10px' }}>
                               <Button
@@ -287,7 +325,7 @@ export default function PacketsPage() {
                                 }}
                                 onClick={() => handleQuantityChange(
                                   subProduct._id,
-                                  (selectedProducts[subProduct._id] || 0) - 1
+                                  Math.max(0, ((selectedProducts[subProduct._id] || 0) / 10 - 1) * 10)
                                 )}
                               >
                                 -
@@ -306,7 +344,7 @@ export default function PacketsPage() {
                                 }}
                                 onClick={() => handleQuantityChange(
                                   subProduct._id,
-                                  (selectedProducts[subProduct._id] || 0) + 1
+                                  ((selectedProducts[subProduct._id] || 0) / 10 + 1) * 10
                                 )}
                               >
                                 +
@@ -365,7 +403,7 @@ export default function PacketsPage() {
                         </IconButton>
                       </Box>
                       <Collapse in={expandedSections[product._id]}>
-                        <Box sx={{ p: 4, bgcolor: '#ECF1CF' }}>
+                        <Box sx={{ p: 4, bgcolor: '#ECF1CF', m: 4, borderRadius: '16px' }}>
                           <Typography variant="body2">
                             Destekleyici ürünlerimiz ile döngünüzü daha konforlu geçirin.
                           </Typography>
@@ -391,7 +429,7 @@ export default function PacketsPage() {
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
-                                  bgcolor: '#EF4E25',
+                                  bgcolor: getProductColor(subProduct.name),
                                 }}
                               >
                                 <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -413,7 +451,7 @@ export default function PacketsPage() {
                                 }}
                                 onClick={() => handleQuantityChange(
                                   subProduct._id,
-                                  (selectedProducts[subProduct._id] || 0) - 1
+                                  Math.max(0, ((selectedProducts[subProduct._id] || 0) / 10 - 1) * 10)
                                 )}
                               >
                                 -
@@ -432,7 +470,7 @@ export default function PacketsPage() {
                                 }}
                                 onClick={() => handleQuantityChange(
                                   subProduct._id,
-                                  (selectedProducts[subProduct._id] || 0) + 1
+                                  ((selectedProducts[subProduct._id] || 0) / 10 + 1) * 10
                                 )}
                               >
                                 +
@@ -469,54 +507,39 @@ export default function PacketsPage() {
               {Object.entries(groupSelectedProducts()).map(([category, items]) => (
                 items.length > 0 && (
                   <Box key={category}>
-                    <Typography variant="subtitle1" sx={{ mb: 2, color: '#666' }}>
+                    <Typography variant="subtitle1" sx={{ color: '#666', fontWeight: 600 }}>
                       {category === 'Menstrual' ? 'Menstrual Ürünler' : 'Destekleyici Ürünler'}
                     </Typography>
-                    {items.map(({ id, count, product, subProduct }) => (
+                    {items.map(({ id, count, subProduct }) => (
                       <Box
                         key={id}
                         sx={{
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
-                          mb: 1,
+                          mb: 2,
+                          p: 2,
+                          backgroundColor: '#fff',
+                          borderRadius: '8px',
+                          border: '1px solid #E0E0E0'
                         }}
                       >
+                        <Typography>
+                          {count}x {subProduct.name}
+                        </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                          <Box
-                            sx={{
-                              width: '50px',
-                              height: '25px',
-                              marginLeft: '-20px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              bgcolor: '#EF4E25',
-                            }}
-                          >
-                            <svg width="24" height="24" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M3.94025 19.2636C3.94025 20.6394 4.22349 23.7307 6.11715 25.0903C8.01081 26.4498 12.2999 25.6972 13.9265 25.503C15.5531 25.3088 15.367 26.903 15.5936 28.0603C15.8202 29.2175 16.8641 29.5898 17.3739 29.5898H19.9959C19.9959 29.5898 22.1081 29.5898 22.6179 29.5898C23.1278 29.5898 24.1717 29.2256 24.3983 28.0603C24.6249 26.8949 24.4387 25.3007 26.0654 25.503C27.692 25.7053 31.9729 26.4498 33.8747 25.0903C35.7765 23.7307 36.0516 20.6394 36.0516 19.2636C36.0516 17.8879 35.7684 14.7965 33.8747 13.437C31.981 12.0774 27.692 12.83 26.0654 13.0243C24.4387 13.2185 24.6249 11.6242 24.3983 10.467C24.1717 9.30976 23.1278 8.9375 22.6179 8.9375H19.9959C19.9959 8.9375 17.8838 8.9375 17.3739 8.9375C16.8641 8.9375 15.8202 9.30167 15.5936 10.467C15.367 11.6323 15.5531 13.2266 13.9265 13.0243C12.2999 12.8219 8.01891 12.0774 6.11715 13.437C4.21539 14.7965 3.94025 17.8879 3.94025 19.2636Z" stroke="white" strokeWidth="1.5" strokeMiterlimit="10" />
-                              <path d="M25.4665 16.5039H14.5334C13.139 16.5039 12.0085 17.6343 12.0085 19.0288V19.4901C12.0085 20.8845 13.139 22.015 14.5334 22.015H25.4665C26.861 22.015 27.9914 20.8845 27.9914 19.4901V19.0288C27.9914 17.6343 26.861 16.5039 25.4665 16.5039Z" stroke="white" strokeWidth="1.5" strokeMiterlimit="10" />
-                            </svg>
-                          </Box>
-                          <Typography>
-                            {count}x {subProduct.name}
-                          </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                          <Typography>{subProduct.price * count}₺</Typography>
+                          <Typography>{subProduct.price}₺</Typography>
                           <IconButton 
                             onClick={() => handleQuantityChange(id, 0)}
                             sx={{ 
                               color: '#000',
                               padding: '4px',
                               '&:hover': {
-                                backgroundColor: 'transparent',
                                 color: '#EF4E25'
                               }
                             }}
                           >
-                            <DeleteOutlineIcon />
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M16 6v-.8c0-1.12 0-1.68-.218-2.108a2 2 0 0 0-.874-.874C14.48 2 13.92 2 12.8 2h-1.6c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C8 3.52 8 4.08 8 5.2V6m2 5.5v5m4-5v5M3 6h18m-2 0v11.2c0 1.68 0 2.52-.327 3.162a3 3 0 0 1-1.311 1.311C16.72 22 15.88 22 14.2 22H9.8c-1.68 0-2.52 0-3.162-.327a3 3 0 0 1-1.311-1.311C5 19.72 5 18.88 5 17.2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                           </IconButton>
                         </Box>
                       </Box>
@@ -525,13 +548,6 @@ export default function PacketsPage() {
                   </Box>
                 )
               ))}
-            </Box>
-
-            <Divider sx={{ my: 2 }} />
-
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Typography variant="h6">Toplam</Typography>
-              <Typography variant="h6">{calculateTotalPrice()}₺</Typography>
             </Box>
 
             <Button
@@ -547,9 +563,10 @@ export default function PacketsPage() {
                   bgcolor: '#333',
                 },
                 borderRadius: '24px',
+                mt: 2
               }}
             >
-              Sepete Ekle
+              Sepete Ekle ({calculateTotalPrice()}₺)
             </Button>
           </Paper>
         </Box>

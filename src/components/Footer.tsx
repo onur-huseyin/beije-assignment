@@ -3,6 +3,7 @@
 import { Box, Container, Typography, TextField, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const WaveContainer = styled(Box)({
   position: 'relative',
@@ -188,8 +189,8 @@ export default function Footer() {
               </Box>
             </Box>
             <PaymentMethods>
-              <img src="/images/mastercard.png" alt="Mastercard" height="24" />
-              <img src="/images/visa.png" alt="Visa" height="24" />
+              <Image src="/images/master.png" alt="Mastercard" width={24} height={24} />
+              <Image src="/images/visa.png" alt="Visa" width={24} height={24} />
             </PaymentMethods>
           </BottomSection>
         </FooterContent>
