@@ -13,6 +13,7 @@ const NavContainer = styled(Container)({
   alignItems: 'center',
   height: '80px',
   padding: '0 24px',
+  backgroundColor: '#F7F6F5',
 });
 
 const NavLink = styled(Typography)({
@@ -62,7 +63,7 @@ export default function Navbar() {
     <AppBar 
       position="fixed" 
       sx={{ 
-        bgcolor: '#fff',
+        bgcolor: '#F7F6F5',
         boxShadow: 'none',
         borderBottom: '1px solid #F6F2ED',
         zIndex: 1100,
@@ -101,7 +102,7 @@ export default function Navbar() {
           <Link href="/period-test" passHref style={{ textDecoration: 'none' }}>
             <NavLink>Regl Testi!</NavLink>
           </Link>
-          <Link href="/create-package" passHref style={{ textDecoration: 'none' }}>
+          <Link href="/packets" passHref style={{ textDecoration: 'none' }}>
             <NavLink>Kendi Paketini Oluştur</NavLink>
           </Link>
         </DesktopNav>
