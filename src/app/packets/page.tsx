@@ -1,3 +1,34 @@
+/**
+ * PacketsPage Komponenti
+ * 
+ * @description
+ * Paket seçim sayfası komponenti. Menstrual ve Destekleyici ürünlerin listelendiği,
+ * ürün seçimi ve miktar ayarlaması yapılabildiği, seçilen ürünlerin özetlendiği sayfa.
+ * 
+ * Özellikler:
+ * - Ürünleri kategorilere göre (Menstrual/Destekleyici) ayırır ve listeler
+ * - Her ürün için miktar seçimi yapılabilir (10'ar adetlik paketler halinde)
+ * - Seçilen ürünlerin toplam fiyatını hesaplar
+ * - Sepete ekleme işlemini yönetir
+ * - Ürün seçimlerini localStorage'da saklar
+ * - Yükleme durumlarını yönetir
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <PacketsPage />
+ * ```
+ * 
+ * @returns {JSX.Element} Paket seçim sayfası komponenti
+ * 
+ * @test
+ * - ✓ Başlangıçta yükleme durumunu gösterir
+ * - ✓ Yükleme tamamlandığında ürünleri gösterir
+ * - ✓ Ürün seçimini yönetir
+ * - ✓ Miktar değişikliklerini yönetir
+ * - ✓ Toplam fiyatı doğru hesaplar
+ */
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -181,7 +212,7 @@ export default function PacketsPage() {
       case 'Süper Ped':
         return '#B4362B'; // Kırmızımsı
       case 'Süper+ Ped':
-        return '#6D1D19'; // Koyu kırmızı
+        return '#610D00'; // Koyu kırmızı
       case 'Mini Tampon':
         return '#EF4E25';
       case 'Standard Tampon':

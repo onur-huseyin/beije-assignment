@@ -136,8 +136,8 @@ export default function Footer() {
             <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
               Arayı açmayalım!
             </Typography>
-            <Typography variant="body2" sx={{ opacity: 0.8 }}>
-              beije'deki yeni ürün ve gelişmeleri sana haber verelim & aylık e-gazetemiz dönöp'ye abone ol!
+            <Typography variant="body2" color="text.secondary">
+              beije&apos;nin ürünlerini ve hizmetlerini kullanarak, beije&apos;nin Kullanıcı Sözleşmesi&apos;ni ve Gizlilik Politikası&apos;nı kabul etmiş olursunuz.
             </Typography>
             <NewsletterForm>
               <StyledInput placeholder="E-mail Adresin" fullWidth />

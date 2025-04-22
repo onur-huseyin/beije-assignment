@@ -12,6 +12,22 @@ import Image from 'next/image';
 import type { RootState } from '@/store/store';
 import { toast } from 'sonner';
 
+/**
+ * LoginForm Komponenti
+ * 
+ * @description
+ * Kullanıcı girişi için form komponenti. Email ve şifre alanları ile giriş işlemini gerçekleştirir.
+ * Form validasyonu, hata mesajları ve yükleme durumu göstergesi içerir.
+ * 
+ * @component
+ * @example
+ * ```tsx
+ * <LoginForm />
+ * ```
+ * 
+ * @returns {JSX.Element} Giriş formu komponenti
+ */
+
 const LoginForm = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -100,7 +116,7 @@ const LoginForm = () => {
       {/* Sol taraf - Ürün görselleri */}
       <Box 
         sx={{ 
-          flex: 1.2,
+          flex: 1.5,
           display: { xs: 'none', md: 'block' },
           position: 'relative',
           bgcolor: '#E6EEF1',
@@ -124,6 +140,7 @@ const LoginForm = () => {
           flexDirection: 'column',
           justifyContent: 'center',
           p: { xs: 2, sm: 4, md: 8 },
+          m: { xs: 0, sm: 4, md: 12 }
         }}
       >
         <Box sx={{ textAlign: 'center', padding: '36px 0' }}>
@@ -184,6 +201,7 @@ const LoginForm = () => {
               '& .MuiInputLabel-root.Mui-focused': {
                 color: '#000',
               },
+              borderRadius: '20px',
             }}
           />
           <TextField

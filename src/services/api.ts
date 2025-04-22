@@ -6,43 +6,19 @@ const VERIFY_PACKET_URL = 'https://3a631b5b-9b1b-4b7f-b736-00d1ce4a1505.mock.pst
 export const api = {
   auth: {
     login: async (email: string, password: string) => {
-      try {
-        const response = await axios.post(`${API_BASE_URL}/sign-in-request`, {
-          email,
-          password,
-        });
-        
-        if (response.data && response.data.success) {
-          return response.data;
-        }
-        
-        throw new Error('Login failed');
-      } catch (error) {
-        console.error('Login error:', error);
-        throw error;
-      }
+      const response = await axios.post(`${API_BASE_URL}/sign-in-request`, {
+        email,
+        password,
+      });
+      return response.data;
     },
-    getProfile: async (token: string) => {
-      try {
-        // Mock profile data
-        const mockProfile = {
-          success: true,
-          data: {
-            _id: "1",
-            profileInfo: {
-              firstName: "Test",
-              lastName: "User",
-              birthDate: "1990-01-01",
-              email: "test@example.com",
-              passwordHash: "hashed_password"
-            }
-          }
-        };
-        return mockProfile;
-      } catch (error) {
-        console.error('Profile error:', error);
-        throw error;
-      }
+    getProfile: async () => {
+      const response = await axios.get(`${API_BASE_URL}/profile`, {
+        headers: {
+          'x-auth-token': localStorage.getItem('token'),
+        },
+      });
+      return response.data;
     },
   },
   products: {

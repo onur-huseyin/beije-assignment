@@ -13,6 +13,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: "beije",
   description: "beije Frontend Assignment",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

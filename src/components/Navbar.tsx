@@ -71,7 +71,7 @@ export default function Navbar() {
     >
       <NavContainer maxWidth="lg">
         {/* Logo */}
-        <Link href="/" style={{ textDecoration: 'none' }}>
+        <Link href="/login" style={{ textDecoration: 'none' }}>
           <Typography
             variant="h6"
             sx={{
@@ -93,16 +93,16 @@ export default function Navbar() {
             <NavLink>Tüm Ürünler</NavLink>
             <ProductsMenu isOpen={isProductsMenuOpen} />
           </ProductsButton>
-          <Link href="/about" passHref style={{ textDecoration: 'none' }}>
+          <Link href="#" passHref style={{ textDecoration: 'none' }}>
             <NavLink>Biz Kimiz?</NavLink>
           </Link>
-          <Link href="/donation" passHref style={{ textDecoration: 'none' }}>
+          <Link href="#" passHref style={{ textDecoration: 'none' }}>
             <NavLink>Bağış Kültürü</NavLink>
           </Link>
-          <Link href="/period-test" passHref style={{ textDecoration: 'none' }}>
+          <Link href="#" passHref style={{ textDecoration: 'none' }}>
             <NavLink>Regl Testi!</NavLink>
           </Link>
-          <Link href="/packets" passHref style={{ textDecoration: 'none' }}>
+          <Link href="#" passHref style={{ textDecoration: 'none' }}>
             <NavLink>Kendi Paketini Oluştur</NavLink>
           </Link>
         </DesktopNav>
