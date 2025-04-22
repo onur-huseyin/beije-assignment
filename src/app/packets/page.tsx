@@ -84,6 +84,7 @@ export default function PacketsPage() {
   const [token, setTokenState] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -225,7 +226,7 @@ export default function PacketsPage() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4, mt: 16, mb: 16 }}>
+    <Container maxWidth="lg" sx={{ py: 4, mt: 16, mb: { xs: 16, md: 16 } }}>
       <Box sx={{ display: 'flex', gap: '32px', flexDirection: 'row', flexWrap: 'wrap' }}>
         {/* Sol Panel - Ürünler */}
         <Box sx={{ flex: '1 1 400px' }}>
@@ -518,9 +519,9 @@ export default function PacketsPage() {
           </Box>
         </Box>
 
-        {/* Sağ Panel - Seçilen Ürünler */}
-        <Box sx={{ flex: '0 1 400px' }}>
-          <Paper sx={{ p: 3, position: 'sticky', top: 20, bgColor: '#fff', borderRadius: '16px', maxWidth: '100%', width: '100%' }} elevation={0}>
+        {/* Masaüstü Panel */}
+        <Box sx={{ flex: '0 1 400px', display: { xs: 'none', md: 'block' } }}>
+          <Paper sx={{ p: 3, position: 'sticky', top: 20, bgcolor: '#fff', borderRadius: '16px', maxWidth: '100%', width: '100%' }} elevation={0}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, backgroundColor: '#fff' }}>
               <Typography variant="h4" sx={{ fontWeight: 500 }}>Paketin</Typography>
               <Chip
@@ -570,7 +571,9 @@ export default function PacketsPage() {
                               }
                             }}
                           >
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M16 6v-.8c0-1.12 0-1.68-.218-2.108a2 2 0 0 0-.874-.874C14.48 2 13.92 2 12.8 2h-1.6c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C8 3.52 8 4.08 8 5.2V6m2 5.5v5m4-5v5M3 6h18m-2 0v11.2c0 1.68 0 2.52-.327 3.162a3 3 0 0 1-1.311 1.311C16.72 22 15.88 22 14.2 22H9.8c-1.68 0-2.52 0-3.162-.327a3 3 0 0 1-1.311-1.311C5 19.72 5 18.88 5 17.2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                              <path d="M16 6v-.8c0-1.12 0-1.68-.218-2.108a2 2 0 0 0-.874-.874C14.48 2 13.92 2 12.8 2h-1.6c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C8 3.52 8 4.08 8 5.2V6m2 5.5v5m4-5v5M3 6h18m-2 0v11.2c0 1.68 0 2.52-.327 3.162a3 3 0 0 1-1.311 1.311C16.72 22 15.88 22 14.2 22H9.8c-1.68 0-2.52 0-3.162-.327a3 3 0 0 1-1.311-1.311C5 19.72 5 18.88 5 17.2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                            </svg>
                           </IconButton>
                         </Box>
                       </Box>
@@ -584,7 +587,6 @@ export default function PacketsPage() {
             <Button
               fullWidth
               variant="contained"
-              color="primary"
               onClick={handleAddToCart}
               disabled={Object.keys(selectedProducts).length === 0}
               sx={{
@@ -599,6 +601,137 @@ export default function PacketsPage() {
             >
               Sepete Ekle ({calculateTotalPrice()}₺)
             </Button>
+          </Paper>
+        </Box>
+
+        {/* Mobil Panel */}
+        <Box sx={{ 
+          display: { xs: 'block', md: 'none' }, 
+          width: '100%', 
+          position: 'fixed', 
+          bottom: 0, 
+          left: 0, 
+          zIndex: 1000,
+          maxHeight: '80vh'
+        }}>
+          <Paper 
+            sx={{ 
+              width: '100%',
+              borderRadius: '24px 24px 0 0',
+              boxShadow: '0px -4px 12px rgba(0, 0, 0, 0.1)',
+              bgcolor: '#fff',
+              display: 'flex',
+              flexDirection: 'column',
+              maxHeight: '100%'
+            }} 
+            elevation={0}
+          >
+            <Box sx={{ p: 3, borderBottom: showDetails ? '1px solid #eee' : 'none' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }} onClick={() => setShowDetails(!showDetails)}>
+                  <Typography variant="h6" sx={{ fontWeight: 500, display: 'flex', alignItems: 'center' }}>
+                    Toplam
+                    <IconButton size="small" sx={{ ml: 1 }}>
+                      {showDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    </IconButton>
+                  </Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                    ₺{calculateTotalPrice()}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+
+            <Collapse in={showDetails}>
+              <Box 
+                sx={{ 
+                  overflowY: 'auto',
+                  maxHeight: 'calc(80vh - 180px)',
+                  px: 3,
+                  pb: 3,
+                  '&::-webkit-scrollbar': {
+                    width: '6px'
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    background: '#f1f1f1',
+                    borderRadius: '3px'
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    background: '#888',
+                    borderRadius: '3px'
+                  }
+                }}
+              >
+                {Object.entries(groupSelectedProducts()).map(([category, items]) => (
+                  items.length > 0 && (
+                    <Box key={category}>
+                      <Typography variant="subtitle1" sx={{ color: '#666', fontWeight: 600, mb: 2 }}>
+                        {category === 'Menstrual' ? 'Menstrual Ürünler' : 'Destekleyici Ürünler'}
+                      </Typography>
+                      {items.map(({ id, count, subProduct }) => (
+                        <Box
+                          key={id}
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            mb: 2,
+                            p: 2,
+                            backgroundColor: '#fff',
+                            borderRadius: '8px',
+                            border: '1px solid #E0E0E0'
+                          }}
+                        >
+                          <Typography>
+                            {count}x {subProduct.name}
+                          </Typography>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Typography>{subProduct.price}₺</Typography>
+                            <IconButton 
+                              onClick={() => handleQuantityChange(id, 0)}
+                              sx={{ 
+                                color: '#000',
+                                padding: '4px',
+                                '&:hover': {
+                                  color: '#EF4E25'
+                                }
+                              }}
+                            >
+                              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                                <path d="M16 6v-.8c0-1.12 0-1.68-.218-2.108a2 2 0 0 0-.874-.874C14.48 2 13.92 2 12.8 2h-1.6c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C8 3.52 8 4.08 8 5.2V6m2 5.5v5m4-5v5M3 6h18m-2 0v11.2c0 1.68 0 2.52-.327 3.162a3 3 0 0 1-1.311 1.311C16.72 22 15.88 22 14.2 22H9.8c-1.68 0-2.52 0-3.162-.327a3 3 0 0 1-1.311-1.311C5 19.72 5 18.88 5 17.2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                              </svg>
+                            </IconButton>
+                          </Box>
+                        </Box>
+                      ))}
+                      {category === 'Menstrual' && items.length > 0 && <Divider sx={{ my: 2 }} />}
+                    </Box>
+                  )
+                ))}
+              </Box>
+            </Collapse>
+
+            <Box sx={{ p: 3, pt: 0 }}>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={handleAddToCart}
+                disabled={Object.keys(selectedProducts).length === 0}
+                sx={{
+                  bgcolor: '#000',
+                  color: '#fff',
+                  '&:hover': {
+                    bgcolor: '#333',
+                  },
+                  borderRadius: '24px',
+                  py: 1.5,
+                  fontSize: '16px',
+                  textTransform: 'none'
+                }}
+              >
+                Sepete Ekle
+              </Button>
+            </Box>
           </Paper>
         </Box>
       </Box>

@@ -133,18 +133,28 @@ export default function Footer() {
       <FooterContainer>
         <FooterContent>
           <NewsletterSection>
-            <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              color: '#CE7328',
+              fontWeight: 700,
+              fontSize: '1.5rem',
+            }}
+          >
+            beije
+          </Typography>
+            <Typography variant="h6" component="h2" sx={{ fontWeight: 500, opacity: 0.8 }}>
               Arayı açmayalım!
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ opacity: 0.8 , color: '#fff' }}>
               beije&apos;nin ürünlerini ve hizmetlerini kullanarak, beije&apos;nin Kullanıcı Sözleşmesi&apos;ni ve Gizlilik Politikası&apos;nı kabul etmiş olursunuz.
             </Typography>
             <NewsletterForm>
               <StyledInput placeholder="E-mail Adresin" fullWidth />
               <SubmitButton>Gönder</SubmitButton>
             </NewsletterForm>
-            <Typography variant="caption" sx={{ opacity: 0.8 }}>
-              Abone olarak, beije KVKK ve Gizlilik Politikası'nı kabul ediyor ve beije'den haber almayı onaylıyorum.
+            <Typography variant="caption" sx={{ opacity: 0.8 , color: '#fff' }}>
+              Abone olarak, beije KVKK ve Gizlilik Politikası&apos;nı kabul ediyor ve beije&apos;den haber almayı onaylıyorum.
             </Typography>
           </NewsletterSection>
 
