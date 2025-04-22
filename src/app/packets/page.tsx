@@ -115,7 +115,8 @@ export default function PacketsPage() {
           dispatch(setPackets(response.data.packets));
         }
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Ürünler yüklenirken hata oluştu:', error);
+        toast.error('Ürünler yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.');
       } finally {
         setIsLoading(false);
       }

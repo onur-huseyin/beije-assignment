@@ -13,12 +13,37 @@ export const api = {
       return response.data;
     },
     getProfile: async () => {
-      const response = await axios.get(`${API_BASE_URL}/profile`, {
-        headers: {
-          'x-auth-token': localStorage.getItem('token'),
-        },
-      });
-      return response.data;
+      try {
+        const authToken = localStorage.getItem('token');
+        if (!authToken) {
+          throw new Error('Token bulunamadı');
+        }
+
+        const response = await fetch(`${API_BASE_URL}/profile`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || 'Profil bilgileri alınamadı');
+        }
+
+        return {
+          success: true,
+          data: data
+        };
+      } catch (error) {
+        console.error('Profil bilgileri alınırken hata oluştu:', error);
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Bilinmeyen bir hata oluştu'
+        };
+      }
     },
   },
   products: {
