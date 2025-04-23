@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextField, Button, Box, Typography, IconButton, InputAdornment, CircularProgress } from '@mui/material';
+import { TextField, Button, Box, Typography, IconButton, InputAdornment, CircularProgress, useMediaQuery, useTheme } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { setToken, setProfile } from '@/store/slices/authSlice';
 import { api } from '@/services/api';
@@ -31,6 +31,8 @@ import { toast } from 'sonner';
 const LoginForm = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { token } = useSelector((state: RootState) => state.auth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -138,7 +140,7 @@ const LoginForm = () => {
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
+          justifyContent: isMobile ? 'flex-start' : 'center',
           p: { xs: 2, sm: 4, md: 8 },
           m: { xs: 0, sm: 4, md: 12 }
         }}
@@ -161,7 +163,7 @@ const LoginForm = () => {
               <Image src="/images/google.svg" alt="Google" width={20} height={20} />
             }
           >
-            <Typography style={{ color: '#000000E5' }}>Google ile Giriş Yap</Typography>
+            <Typography sx={{ color: '#000000E5', fontSize: isMobile ? '12px' : 'inherit' }}>Google ile Giriş Yap</Typography>
           </Button>
           <Button
             fullWidth
@@ -171,7 +173,7 @@ const LoginForm = () => {
               <Image src="/images/facebook.svg" alt="Facebook" width={20} height={20} />
             }
           >
-            <Typography style={{ color: '#000000E5' }}>Facebook ile Giriş Yap</Typography>
+            <Typography sx={{ color: '#000000E5', fontSize: isMobile ? '12px' : 'inherit' }}>Facebook ile Giriş Yap</Typography>
           </Button>
         </Box>
 
