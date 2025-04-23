@@ -145,7 +145,7 @@ const LoginForm = () => {
           m: { xs: 0, sm: 4, md: 12 }
         }}
       >
-        <Box sx={{ textAlign: 'center', padding: '36px 0' }}>
+        <Box sx={{ textAlign: 'center', padding: '36px 0', marginTop: { xs: '5rem', sm: 0 } }}>
           <Typography style={{ color: '#000000E5' }} variant="h4" component="h1">
             Merhaba
           </Typography>
