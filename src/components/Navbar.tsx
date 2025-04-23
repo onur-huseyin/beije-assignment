@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 import Image from 'next/image';
 import ProductsMenu from './ProductsMenu';
+import MobileMenu from './MobileMenu';
 
 const NavContainer = styled(Container)({
   display: 'flex',
@@ -58,6 +59,11 @@ const IconButtonStyled = styled(IconButton)({
 
 export default function Navbar() {
   const [isProductsMenuOpen, setIsProductsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
     <AppBar 
@@ -107,8 +113,6 @@ export default function Navbar() {
           </Link>
         </DesktopNav>
 
-
-
         {/* Cart & Account Icons */}
         <Stack direction="row" spacing={2}>
           <IconButtonStyled>
@@ -117,14 +121,20 @@ export default function Navbar() {
           <IconButtonStyled>
             <Image src="/images/account.svg" alt="Account" width={24} height={24} />
           </IconButtonStyled>
-                  {/* Mobile Navigation */}
-        <MobileNav direction="row" spacing={2} alignItems="center">
-          <IconButtonStyled>
-            <Image src="/images/menu.svg" alt="Menu" width={24} height={24} />
-          </IconButtonStyled>
-        </MobileNav>
+          {/* Mobile Navigation */}
+          <MobileNav direction="row" spacing={2} alignItems="center">
+            <IconButtonStyled onClick={handleMobileMenuToggle}>
+              <Image src="/images/menu.svg" alt="Menu" width={24} height={24} />
+            </IconButtonStyled>
+          </MobileNav>
         </Stack>
       </NavContainer>
+
+      {/* Mobile Menu */}
+      <MobileMenu 
+        isOpen={isMobileMenuOpen} 
+        onClose={() => setIsMobileMenuOpen(false)} 
+      />
     </AppBar>
   );
 } 
